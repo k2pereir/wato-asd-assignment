@@ -3,12 +3,13 @@
  
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
- 
+#include <vector>
 #include "costmap_core.hpp"
  
 class CostmapNode : public rclcpp::Node {
   public:
     CostmapNode();
+    void lidarCallback(const sensor_msgs::msg::LaserScan::SharedPtr msg);
     
     // Place callback function here
     void publishMessage();
