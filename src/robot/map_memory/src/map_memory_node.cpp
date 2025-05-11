@@ -1,5 +1,6 @@
 #include "map_memory_node.hpp"
 #include "nav_msgs/msg/odometry.hpp"
+#include "nav_msgs/msg/occupancy_grid.hpp"
 
 MapMemoryNode::MapMemoryNode() : Node("map_memory_node"), last_x_(0.0), last_y_(0.0), distance_threshold(1.5), map_updated_(false), update_map_(false) 
 {
@@ -46,9 +47,10 @@ void MapMemoryNode::mergeCostmap()
   {
     for(size_t j = 0; j < latest_costmap_.info.width; ++j)
     {
-      int global_x = j + latest_costmap_.info.origin.position.x / map_.info.resolution; 
-      int global_y = i + latest_costmap_.info.origin.position.y / map_.info.resolution;
-      if(global_x >= 0 && global_x < map_.info.width && global_y >= 0 && global_y < map_.info.height)
+      int global_x = j + latest_costmap_.info.origin.position.x / map_memory_.getMap().info.resolution; 
+      int global_y = i + latest_costmap_.info.origin.position.y / map_memory_.getMap().info.resolution;
+      const auto& memory_map = map_memory_.getMap();
+      if(global_x >= 0 && global_x < memory_map.info.width && global_y >= 0 && global_y < memory_map.info.height)
       {
         size_t global_index = global_y * map_.info.width + global_x;
         size_t costmap_index = i * latest_costmap_.info.width + j; 

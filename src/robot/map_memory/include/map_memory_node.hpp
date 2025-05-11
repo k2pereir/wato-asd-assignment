@@ -27,6 +27,7 @@ class MapMemoryNode : public rclcpp::Node {
     void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg);
     void updateMap();
     void mergeCostmap(); 
+    MapMemory map_memory_;
 };
 
 #endif 
