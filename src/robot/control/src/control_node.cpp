@@ -1,6 +1,6 @@
 #include "control_node.hpp"
 
-ControlNode::ControlNode(): Node("control"), control_(robot::ControlCore(this->get_logger())) {}
+ControlNode::ControlNode(): Node("control"), control_(std::make_unique<robot::ControlCore>(shared_from_this(), this->get_logger())) {}
 
 int main(int argc, char ** argv)
 {

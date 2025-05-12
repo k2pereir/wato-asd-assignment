@@ -11,6 +11,7 @@ class ControlNode : public rclcpp::Node {
 
   private:
     robot::ControlCore control_;
+
 };
 
 #endif
