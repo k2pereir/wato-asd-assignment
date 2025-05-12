@@ -16,6 +16,7 @@ find_package(rclcpp REQUIRED)      # ROS2 C++ package
 find_package(std_msgs REQUIRED)    # YOU ARE ONLY ADDING THIS TO THE FILE
 find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
  
 # Compiles source files into a library
 # A library is not executed, instead other executables can link
@@ -34,18 +35,13 @@ ament_target_dependencies(costmap_lib
   std_msgs # YOU ARE ONLY ADDING THIS TO THE FILE
   geometry_msgs
   nav_msgs
+  sensor_msgs 
 )
  
 # Create ROS2 node executable from source files
 add_executable(costmap_node src/costmap_node.cpp)
 # Link to the previously built library to access costmap classes and methods
 target_link_libraries(costmap_node costmap_lib)
-
-ament_target_dependencies(control_node
-  rclcpp
-  geometry_msgs
-  nav_msgs
-)
  
 # Copy executable to installation location
 install(TARGETS

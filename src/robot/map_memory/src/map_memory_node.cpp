@@ -34,7 +34,7 @@ void MapMemoryNode::odometryCallback(const nav_msgs::msg::Odometry::SharedPtr ms
 void MapMemoryNode::updateMap()
 {
   if (map_updated_ && update_map_) {
-    mergeCostmap(); 
+    map_memory_.updateCostmap(latest_costmap_, last_x_, last_y_); 
     map_pub_->publish(map_memory_.getMap());
     update_map_ = false;
     RCLCPP_INFO(this->get_logger(), "Map updated and published");

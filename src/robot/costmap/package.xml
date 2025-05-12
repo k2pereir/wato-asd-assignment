@@ -12,6 +12,8 @@
   <depend>rclcpp</depend>
   <depend>geometry_msgs</depend>
   <depend>nav_msgs</depend>
+  <depend>sensor_msgs</depend>
+
 
   <!--YOU ARE ADDING THIS MAINLY-->
   <depend>std_msgs</depend>

@@ -14,7 +14,7 @@ CostmapNode::CostmapNode() : Node("costmap"), costmap_(robot::CostmapCore(this->
   origin.position.y = -5.0; 
   origin.position.z = 0.0;
   origin.orientation.w = 1.0;
-  costmap_core_.initializeCostmap(width, height, resolution, origin, inflation_radius);
+  costmap_.initializeCostmap(width, height, resolution, origin, inflation_radius);
   costmap_pub_ = this->create_publisher<nav_msgs::msg::OccupancyGrid>("/costmap", 10);
   laser_sub_ = this->create_subscription<sensor_msgs::msg::LaserScan>(
     "/lidar", 10, std::bind(&CostmapNode::processLaserScan, this, std::placeholders::_1));

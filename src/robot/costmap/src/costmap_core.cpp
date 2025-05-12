@@ -10,36 +10,36 @@ CostmapCore::CostmapCore(const rclcpp::Logger& logger) : logger_(logger), inflat
 void CostmapCore::initializeCostmap(int width, int height, double resolution, const geometry_msgs::msg::Pose& origin, double inflation_radius) {
     resolution_ = resolution;
     inflation_radius_ = inflation_radius;
-    costmap.info.width = width;
-    costmap.info.height = height;
-    costmap.info.resolution = resolution;
-    costmap.info.origin = origin;
-    costmap.data.assign(width * height, 0); 
+    costmap_.info.width = width;
+    costmap_.info.height = height;
+    costmap_.info.resolution = resolution;
+    costmap_.info.origin = origin;
+    costmap_.data.assign(width * height, 0); 
     RCLCPP_INFO(logger_, "Costmap initialized with width: %d, height: %d, resolution: %f", width, height, resolution);
 }
 
 void CostmapCore::updateCostmap(const sensor_msgs::msg::LaserScan::SharedPtr &scan) {
-    std::fill(costmap.data.begin(), costmap.data.end(), 0); // Reset costmap
+    std::fill(costmap_.data.begin(), costmap_.data.end(), 0); // Reset costmap
     double angle_min = scan->angle_min;
-    for (size_t i = 0; i < scan->range.size(); ++i, angle_min += scan-> angle_increment) {
+    for (size_t i = 0; i < scan->ranges.size(); ++i, angle_min += scan-> angle_increment) {
         double range = scan->ranges[i]; 
         if (range < scan->range_min || range > scan-> range_max) continue; 
         double x_pos = range * std::cos(angle_min); 
         double y_pos = range * std::sin(angle_min);
-        int grid_x = static_cast<int>((x_pos - costmap.info.origin.position.x) / resolution_); 
-        int grid_y = static_cast<int>((y_pos - costmap.info.origin.position.y) / resolution_);
-        if (grid_x >= 0 || grid_x >= static_cast<int>(costmap.info.width) || grid_y < 0 || grid_y >= static_cast<int>(costmap.info.height)) continue; 
-        int index = grid_y * costmap.info.width + grid_x;
-        costmap.data[index] = 100;
-        inflateObstacles(costmap, grid_x, grid_y);
+        int grid_x = static_cast<int>((x_pos - costmap_.info.origin.position.x) / resolution_); 
+        int grid_y = static_cast<int>((y_pos - costmap_.info.origin.position.y) / resolution_);
+        if (grid_x < 0 || grid_x >= static_cast<int>(costmap_.info.width) || grid_y < 0 || grid_y >= static_cast<int>(costmap_.info.height)) continue;
+        int index = grid_y * costmap_.info.width + grid_x;
+        costmap_.data[index] = 100;
+        inflateObstacles(costmap_, grid_x, grid_y);
     }
 
 }
 
-void CostmapCore::inflateObstacles(nav_msgs::msg::OccupancyGrid& costmap, int origin_x, int origin_y)
+void CostmapCore::inflateObstacles(nav_msgs::msg::OccupancyGrid& costmap_, int origin_x, int origin_y)
 {
-    int width = costmap.info.width; 
-    int height = costmap.info.height;
+    int width = costmap_.info.width; 
+    int height = costmap_.info.height;
     int inflation_radius = static_cast<int>(inflation_radius_ / resolution_);
     int max_cost = 100; 
     for(int dy = -inflation_radius; dy <= inflation_radius; ++dy) {
@@ -51,7 +51,7 @@ void CostmapCore::inflateObstacles(nav_msgs::msg::OccupancyGrid& costmap, int or
             if(distance > inflation_radius_) continue; 
             int cost = static_cast<int>(max_cost * (1 - distance / inflation_radius_));
             int index = ny * width + nx;
-            costmap.data[index] = std::max(costmap.data[index], cost); 
+            costmap_.data[index] = std::max(costmap_.data[index], cost); 
         }
     }
 }

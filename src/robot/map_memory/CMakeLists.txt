@@ -49,6 +49,7 @@ ament_target_dependencies(map_memory_node
 # Copy executable to installation location
 install(TARGETS
   map_memory_node
+  map_memory_lib
   DESTINATION lib/${PROJECT_NAME})
 
 # Copy launch and config files to installation location

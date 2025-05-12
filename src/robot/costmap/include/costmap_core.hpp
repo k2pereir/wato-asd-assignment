@@ -13,9 +13,10 @@ class CostmapCore {
   public:
     // Constructor, we pass in the node's RCLCPP logger to enable logging to terminal
     explicit CostmapCore(const rclcpp::Logger& logger);
-    void initializeCostmap(int width, int height, double resoulution, const geometry_msgs::msg::Pose& origin, double inflation_radius);
+    void initializeCostmap(int width, int height, double resolution, const geometry_msgs::msg::Pose& origin, double inflation_radius);
     void updateCostmap(const sensor_msgs::msg::LaserScan::SharedPtr &scan);
     void inflateObstacles(nav_msgs::msg::OccupancyGrid& costmap, int origin_x, int origin_y); 
+    const nav_msgs::msg::OccupancyGrid& getOccupancyGrid() const { return costmap_; }
 
   private:
     rclcpp::Logger logger_;
@@ -23,6 +24,8 @@ class CostmapCore {
     double resolution_;
     int width_;
     int height_;
+    nav_msgs::msg::OccupancyGrid costmap_;
+    
 };
 
 }  

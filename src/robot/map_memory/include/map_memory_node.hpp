@@ -24,10 +24,9 @@ class MapMemoryNode : public rclcpp::Node {
     bool map_updated_; 
     bool update_map_; 
     void costmapCallback(const nav_msgs::msg::OccupancyGrid::SharedPtr msg);
-    void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg);
+    void odometryCallback(const nav_msgs::msg::Odometry::SharedPtr msg);
     void updateMap();
     void mergeCostmap(); 
-    MapMemory map_memory_;
 };
 
 #endif 
