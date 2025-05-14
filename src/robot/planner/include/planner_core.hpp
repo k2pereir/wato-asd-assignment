@@ -70,6 +70,7 @@ class PlannerCore {
 
   private:
     rclcpp::Logger logger_;
+    robot::PlannerCore planner_;
     
 };
 

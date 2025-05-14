@@ -24,7 +24,7 @@ class ControlCore {
     double calculateDistance(const geometry_msgs::msg::Point& a, const geometry_msgs::msg::Point& b);
     double extractYaw(const geometry_msgs::msg::Quaternion& q);
     nav_msgs::msg::Path::SharedPtr current_path_; 
-    nav_msgs::msg::Path::SharedPtr current_odom_; 
+    nav_msgs::msg::Odometry::SharedPtr current_odom_; 
     rclcpp::Subscription<nav_msgs::msg::Path>::SharedPtr path_sub_;
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;
     rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_pub_;

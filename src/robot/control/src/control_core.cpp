@@ -1,12 +1,14 @@
 #include "control_core.hpp"
 #include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 #include <cmath>
+#include "nav_msgs/msg/odometry.hpp"
+#include "geometry_msgs/msg/twist.hpp"
 
 namespace robot
 {
 
 ControlCore::ControlCore(rclcpp::Node::SharedPtr node, const rclcpp::Logger& logger) 
-  : node_(node), logger_(logger) 
+  : logger_(logger) 
   {
     path_sub_ = node->create_subscription<nav_msgs::msg::Path>(
       "/path", 10, std::bind(&ControlCore::pathCallback, this, std::placeholders::_1));
@@ -40,14 +42,14 @@ void ControlCore::controlLoop()
 geometry_msgs::msg::PoseStamped ControlCore::findLookaheadPoint()
 {
   const geometry_msgs::msg::Point& current_position = current_odom_->pose.pose.position;
-  for (const auto& pose : current_path_->poses)
-{
-    double distance = calculateDistance(current_position, pose.pose.position);
+  for(const auto&pose : current_path_->poses)
+  {
+    double distance = calculateDistance(current_position, pose.pose.position); 
     if (distance >= lookahead_distance_) {
-      return pose;
+      return pose; 
     }
   }
-  return current_path_->poses.back();
+  return current_path_->poses.back(); 
 }
 
 geometry_msgs::msg::Twist ControlCore::computeVelocity(const geometry_msgs::msg::PoseStamped& target)
@@ -59,11 +61,11 @@ geometry_msgs::msg::Twist ControlCore::computeVelocity(const geometry_msgs::msg:
   double dy = target.pose.position.y - current_pose.position.y;
   double target_angle = std::atan2(dy, dx); 
   double heading_error = target_angle - yaw;
-  while(heading_error > M_PI) heading_error -= 2 * M_PI; 
-  while(heading_error < -M_PI) heading_error += 2 * M_PI;
+  while (heading_error > M_PI) heading_error -= 2 * M_PI; 
+  while (heading_error < -M_PI) heading_error += 2 * M_PI;
   cmd.linear.x = linear_speed_; 
   cmd.angular.z = 2.0 * heading_error; 
-  if(calculateDistance(current_position, target.pose.position) < goal_tolerance_) {
+  if(calculateDistance(current_pose.position, target.pose.position) < goal_tolerance_) {
     cmd.linear.x = 0.0; 
     cmd.angular.z = 0.0; 
   }
@@ -84,4 +86,6 @@ double ControlCore::extractYaw(const geometry_msgs::msg::Quaternion& q)
   double roll, pitch, yaw;
   tf2::Matrix3x3(tf2_q).getRPY(roll, pitch, yaw);
   return yaw;
+}
+
 }

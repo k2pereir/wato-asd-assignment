@@ -2,6 +2,8 @@
 #include <cmath> 
 #include <algorithm> 
 #include <vector>
+#include <nav_msgs/msg/occupancy_grid.hpp>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 
 namespace robot
 {
@@ -51,7 +53,7 @@ void CostmapCore::inflateObstacles(nav_msgs::msg::OccupancyGrid& costmap_, int o
             if(distance > inflation_radius_) continue; 
             int cost = static_cast<int>(max_cost * (1 - distance / inflation_radius_));
             int index = ny * width + nx;
-            costmap_.data[index] = std::max(costmap_.data[index], cost); 
+            costmap_.data[index] = std::max(costmap_.data[index], static_cast<signed char>(cost));
         }
     }
 }

@@ -1,8 +1,6 @@
 #include "map_memory_node.hpp"
-#include "nav_msgs/msg/odometry.hpp"
-#include "nav_msgs/msg/occupancy_grid.hpp"
 
-MapMemoryNode::MapMemoryNode() : Node("map_memory_node"), last_x_(0.0), last_y_(0.0), distance_threshold(1.5), map_updated_(false), update_map_(false) 
+MapMemoryNode::MapMemoryNode() : Node("map_memory_node"), map_memory_(this->get_logger()), last_x_(0.0), last_y_(0.0), distance_threshold_(1.5), map_updated_(false), update_map_(false) 
 {
   costmap_sub_ = this->create_subscription<nav_msgs::msg::OccupancyGrid>(
     "/costmap", 10, std::bind(&MapMemoryNode::costmapCallback, this, std::placeholders::_1));
@@ -50,13 +48,15 @@ void MapMemoryNode::mergeCostmap()
       int global_x = j + latest_costmap_.info.origin.position.x / map_memory_.getMap().info.resolution; 
       int global_y = i + latest_costmap_.info.origin.position.y / map_memory_.getMap().info.resolution;
       const auto& memory_map = map_memory_.getMap();
-      if(global_x >= 0 && global_x < memory_map.info.width && global_y >= 0 && global_y < memory_map.info.height)
+      if(static_cast<unsigned int>(global_x) < memory_map.info.width &&
+         static_cast<unsigned int>(global_y) < memory_map.info.height)
       {
-        size_t global_index = global_y * map_.info.width + global_x;
+        size_t global_index = global_y * memory_map.info.width + global_x;
         size_t costmap_index = i * latest_costmap_.info.width + j; 
         if(latest_costmap_.data[costmap_index] != -1) 
         {
-          map_memory_.getMap().data[global_index] = latest_costmap_.data[costmap_index];
+          auto& mutable_data = const_cast<std::vector<signed char>&>(map_memory_.getMap().data); 
+          mutable_data[global_index] = latest_costmap_.data[costmap_index];
         }
       }
     }

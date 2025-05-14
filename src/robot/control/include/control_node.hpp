@@ -2,7 +2,7 @@
 #define CONTROL_NODE_HPP_
 
 #include "rclcpp/rclcpp.hpp"
-
+#include <memory>
 #include "control_core.hpp"
 
 class ControlNode : public rclcpp::Node {
@@ -10,7 +10,7 @@ class ControlNode : public rclcpp::Node {
     ControlNode();
 
   private:
-    robot::ControlCore control_;
+    std::unique_ptr<robot::ControlCore> control_;    
 
 };
 

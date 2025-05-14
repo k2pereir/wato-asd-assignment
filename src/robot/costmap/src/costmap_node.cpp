@@ -2,6 +2,7 @@
 #include <memory>
 #include <cmath>
 #include "costmap_node.hpp"
+#include "nav_msgs/msg/occupancy_grid.hpp"
 
 CostmapNode::CostmapNode() : Node("costmap"), costmap_(robot::CostmapCore(this->get_logger())) 
 {
@@ -16,7 +17,7 @@ CostmapNode::CostmapNode() : Node("costmap"), costmap_(robot::CostmapCore(this->
   origin.orientation.w = 1.0;
   costmap_.initializeCostmap(width, height, resolution, origin, inflation_radius);
   costmap_pub_ = this->create_publisher<nav_msgs::msg::OccupancyGrid>("/costmap", 10);
-  laser_sub_ = this->create_subscription<sensor_msgs::msg::LaserScan>(
+  lidar_sub_ = this->create_subscription<sensor_msgs::msg::LaserScan>(
     "/lidar", 10, std::bind(&CostmapNode::processLaserScan, this, std::placeholders::_1));
 }
 

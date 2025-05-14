@@ -9,7 +9,7 @@ void MapMemoryCore::initializeMap(int width, int height, double resolution)
   map_.info.width = width;
   map_.info.height = height;
   map_.info.resolution = resolution;
-  map.data.resize(width * height, -1);
+  map_.data.resize(width * height, -1);
 }
 
 void MapMemoryCore::updateCostmap(const nav_msgs::msg::OccupancyGrid& costmap, double x, double y)
@@ -19,7 +19,8 @@ void MapMemoryCore::updateCostmap(const nav_msgs::msg::OccupancyGrid& costmap, d
     {
       int global_x, global_y; 
       toGlobal(costmap, w, h, x, y, global_x, global_y);
-      if (global_x >= 0 && global_x < map_.info.width && global_y >= 0 && global_y < map_.info.height)
+      if (global_x >= 0 && global_x < static_cast<int>(map_.info.width) &&
+          global_y >= 0 && global_y < static_cast<int>(map_.info.height))
       {
         size_t global_index = global_y * map_.info.width + global_x;
         size_t local_index = h * costmap.info.width + w;
@@ -44,4 +45,5 @@ void MapMemoryCore::toGlobal(const nav_msgs::msg::OccupancyGrid& costmap, int lo
 
 const nav_msgs::msg::OccupancyGrid& MapMemoryCore::getMap() const {
   return map_;
+}
 }
