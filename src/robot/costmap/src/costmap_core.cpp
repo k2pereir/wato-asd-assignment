@@ -9,16 +9,19 @@ namespace robot
 {
 CostmapCore::CostmapCore(const rclcpp::Logger& logger) : logger_(logger), inflation_radius_(1.0), resolution_(0.1) {}
 
-void CostmapCore::initializeCostmap(int width, int height, double resolution, const geometry_msgs::msg::Pose& origin, double inflation_radius) {
-    resolution_ = resolution;
-    inflation_radius_ = inflation_radius;
-    costmap_.info.width = width;
-    costmap_.info.height = height;
-    costmap_.info.resolution = resolution;
-    costmap_.info.origin = origin;
-    costmap_.data.assign(width * height, 0); 
-    RCLCPP_INFO(logger_, "Costmap initialized with width: %d, height: %d, resolution: %f", width, height, resolution);
-}
+    void CostmapCore::initializeCostmap(int width, int height, double resolution, const geometry_msgs::msg::Pose& origin, double inflation_radius) {
+        resolution_ = resolution;
+        inflation_radius_ = inflation_radius;
+        costmap_.info.width = width;
+        costmap_.info.height = height;
+        costmap_.info.resolution = resolution;
+        costmap_.info.origin = origin;
+        costmap_.data.assign(width * height, 0); 
+        costmap_.header.frame_id = "map";
+        costmap_.header.stamp = rclcpp::Clock().now();
+        costmap_.info.map_load_time = costmap_.header.stamp;    
+        RCLCPP_INFO(logger_, "Costmap initialized with width: %d, height: %d, resolution: %f", width, height, resolution);
+    }
 
 void CostmapCore::updateCostmap(const sensor_msgs::msg::LaserScan::SharedPtr &scan) {
     std::fill(costmap_.data.begin(), costmap_.data.end(), 0); // Reset costmap
@@ -42,7 +45,7 @@ void CostmapCore::inflateObstacles(nav_msgs::msg::OccupancyGrid& costmap_, int o
 {
     int width = costmap_.info.width; 
     int height = costmap_.info.height;
-    int inflation_radius = static_cast<int>(inflation_radius_ / resolution_);
+    int cell_radius = static_cast<int>(std::ceil(inflation_radius_ / resolution_));
     int max_cost = 100; 
     for(int dy = -inflation_radius; dy <= inflation_radius; ++dy) {
         for(int dx = -inflation_radius; dx <= inflation_radius; ++dx) {

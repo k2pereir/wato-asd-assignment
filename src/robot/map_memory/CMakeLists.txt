@@ -25,8 +25,7 @@ find_package(tf2 REQUIRED)
 add_library(map_memory_lib
   src/map_memory_core.cpp)
 # Indicate to compiler where to search for header files
-target_include_directories(map_memory_lib
-  PUBLIC include)
+target_include_directories(map_memory_lib PUBLIC include)
 # Add ROS2 dependencies required by package
 ament_target_dependencies(map_memory_lib 
   rclcpp

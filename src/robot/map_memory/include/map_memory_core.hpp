@@ -20,6 +20,7 @@ class MapMemoryCore {
   private:
     rclcpp::Logger logger_;
     nav_msgs::msg::OccupancyGrid map_;
+    nav_msgs::msg::OccupancyGrid& getMutableMap();
     void toGlobal(const nav_msgs::msg::OccupancyGrid& costmap, int local_x, int local_y, double x, double y, int& global_x, int& global_y);
 };
 

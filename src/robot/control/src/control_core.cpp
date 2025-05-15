@@ -3,6 +3,11 @@
 #include <cmath>
 #include "nav_msgs/msg/odometry.hpp"
 #include "geometry_msgs/msg/twist.hpp"
+#include <chrono>
+#include <functional>
+#include "tf2/LinearMath/Quaternion.hpp"
+#include "tf2/LinearMath/Matrix3x3.hpp"
+
 
 namespace robot
 {
@@ -63,7 +68,11 @@ geometry_msgs::msg::Twist ControlCore::computeVelocity(const geometry_msgs::msg:
   double heading_error = target_angle - yaw;
   while (heading_error > M_PI) heading_error -= 2 * M_PI; 
   while (heading_error < -M_PI) heading_error += 2 * M_PI;
-  cmd.linear.x = linear_speed_; 
+  if (std::fabs(heading_error) < 0.2) {
+    cmd.linear.x = linear_speed_; 
+  } else {
+    cmd.linear.x = 0.0; 
+  }
   cmd.angular.z = 2.0 * heading_error; 
   if(calculateDistance(current_pose.position, target.pose.position) < goal_tolerance_) {
     cmd.linear.x = 0.0; 

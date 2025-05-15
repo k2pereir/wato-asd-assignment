@@ -1,4 +1,7 @@
 #include "map_memory_node.hpp"
+#include <memory>
+#include <chrono>
+
 
 MapMemoryNode::MapMemoryNode() : Node("map_memory_node"), map_memory_(this->get_logger()), last_x_(0.0), last_y_(0.0), distance_threshold_(1.5), map_updated_(false), update_map_(false) 
 {
@@ -32,7 +35,7 @@ void MapMemoryNode::odometryCallback(const nav_msgs::msg::Odometry::SharedPtr ms
 void MapMemoryNode::updateMap()
 {
   if (map_updated_ && update_map_) {
-    map_memory_.updateCostmap(latest_costmap_, last_x_, last_y_); 
+    mergeCostmap();
     map_pub_->publish(map_memory_.getMap());
     update_map_ = false;
     RCLCPP_INFO(this->get_logger(), "Map updated and published");
@@ -55,7 +58,7 @@ void MapMemoryNode::mergeCostmap()
         size_t costmap_index = i * latest_costmap_.info.width + j; 
         if(latest_costmap_.data[costmap_index] != -1) 
         {
-          auto& mutable_data = const_cast<std::vector<signed char>&>(map_memory_.getMap().data); 
+          auto& mutable_data = map_memory_.getMutableMap().data;
           mutable_data[global_index] = latest_costmap_.data[costmap_index];
         }
       }

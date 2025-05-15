@@ -8,6 +8,7 @@
 class ControlNode : public rclcpp::Node {
   public:
     ControlNode();
+    void initControlCore();  
 
   private:
     std::unique_ptr<robot::ControlCore> control_;    

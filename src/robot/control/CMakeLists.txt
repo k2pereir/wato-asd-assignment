@@ -17,6 +17,7 @@ find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
+find_package(tf2 REQUIRED)             
 
 # Compiles source files into a library
 # A library is not executed, instead other executables can link
@@ -37,6 +38,7 @@ ament_target_dependencies(control_lib
   geometry_msgs
   nav_msgs
   tf2_geometry_msgs
+  tf2
 )
 
 # Create ROS2 node executable from source files

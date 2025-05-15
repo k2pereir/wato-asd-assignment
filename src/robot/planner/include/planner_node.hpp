@@ -13,7 +13,8 @@ class PlannerNode : public rclcpp::Node {
     PlannerNode();
 
   private:
-    robot::PlannerCore planner_;
+    rclcpp::Logger logger_;
+    robot::PlannerCore planner_;  
     void mapCallback(const nav_msgs::msg::OccupancyGrid::SharedPtr msg);
     void startCallback(const geometry_msgs::msg::Pose::SharedPtr msg);
     void goalCallback(const geometry_msgs::msg::Point::SharedPtr msg);

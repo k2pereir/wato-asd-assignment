@@ -1,8 +1,12 @@
 #include "planner_node.hpp"
+#include <functional>
+#include <memory>
+#include <string>
 
-PlannerNode::PlannerNode() : Node("planner"), planner_(this->get_logger())
+PlannerNode::PlannerNode() : Node("planner") 
 {
-  
+  planner_ = std::make_shared<robot::PlannerCore>(this->get_logger());
+  planner_->initSelfPointer();  
   this->declare_parameter<std::string>("map_frame", "map");
   this->declare_parameter<std::string>("base_frame", "base_link");
   this->declare_parameter<std::string>("global_frame", "odom");
@@ -58,3 +62,4 @@ int main(int argc, char ** argv)
   rclcpp::shutdown();
   return 0;
 }
+

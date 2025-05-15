@@ -1,9 +1,15 @@
 #include "planner_core.hpp"
 #include "geometry_msgs/msg/pose_stamped.hpp" 
 #include <cmath>
+#include <vector>
+#include <memory>
+#include <functional>
+#include <string>
 
 namespace robot
 {
+
+robot::PlannerCore::PlannerCore(const rclcpp::Logger& logger) : logger_(logger) {}
 
 CellIndex worldToMap(double x, double y, const nav_msgs::msg::OccupancyGrid& map)
 {
@@ -45,7 +51,7 @@ nav_msgs::msg::Path PlannerCore::aStar(
     if (current == goal_index) {
       nav_msgs::msg::Path path;
       path.header.frame_id = map.header.frame_id;
-      path.header.stamp    = rclcpp::Clock().now();  
+      path.header.stamp = rclcpp::Clock().now();  
 
       for (CellIndex idx = current; idx != start_index; idx = came_from[idx]) {
         geometry_msgs::msg::PoseStamped ps;

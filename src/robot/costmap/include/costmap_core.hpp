@@ -4,6 +4,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include <sensor_msgs/msg/laser_scan.hpp>
 #include <nav_msgs/msg/occupancy_grid.hpp>
+#include "geometry_msgs/msg/pose.hpp"
 
 namespace robot
 {
@@ -19,7 +20,7 @@ class CostmapCore {
 
   private:
     rclcpp::Logger logger_;
-    int inflation_radius_;
+    double inflation_radius_;
     double resolution_;
     int width_;
     int height_;

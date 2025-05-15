@@ -66,12 +66,12 @@ struct CompareF
 class PlannerCore {
   public:
     explicit PlannerCore(const rclcpp::Logger& logger);
+    std::enable_shared_from_this<PlannerCore> 
     static nav_msgs::msg::Path aStar(const nav_msgs::msg::OccupancyGrid& map, const geometry_msgs::msg::Pose& start, const geometry_msgs::msg::Point& goal);
 
   private:
-    rclcpp::Logger logger_;
-    robot::PlannerCore planner_;
-    
+    const rclcpp::Logger& logger_;
+    std::shared_ptr<robot::PlannerCore> planner_;
 };
 
 }  

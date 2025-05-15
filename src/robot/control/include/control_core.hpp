@@ -5,6 +5,7 @@
 #include "nav_msgs/msg/path.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 #include "nav_msgs/msg/odometry.hpp"
+#include "geometry_msgs/msg/pose_stamped.hpp"
 
 namespace robot
 {
